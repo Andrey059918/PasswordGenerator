@@ -54,9 +54,28 @@ namespace PasswordGenerator
 			var md5hash = md5hasher.ComputeHash(Encoding.UTF8.GetBytes(textBox1.Text + textBox2.Text ));
 			md5hash = md5hasher.ComputeHash(md5hash.Concat(Encoding.UTF8.GetBytes(textBox3.Text)).ToArray());
 			String result="";
-			md5hash.ToList().ForEach(a => result += a.ToString("x2"));
+			md5hash.ToList().ForEach(a => result += a.ToString("x2"),EndShift:8);
 			textBox4.Text = result;
+			md5hash.ToList().ForEach(a => result += a.ToString("x2"),StartShift: 8);
+			textBox5.Text = result;
 		}
 
 	}
-}
+	public static class Extensions
+	{
+		public static void ForEach<T>(this IEnumerable<T> list, Action<T> action, Int32 StartShift = 0, Int32 EndShift = 0)
+		{
+			for (int i = StartShift; i < list.Count() - EndShift; i++)
+			{
+				action(list.ElementAt(i));
+			}
+		}
+		public static void ForEach<T>(this IEnumerable<T> list, Action<T, Int32> action, Int32 StartShift = 0, Int32 EndShift = 0)
+		{
+			for (int i = StartShift; i < list.Count() - EndShift; i++)
+			{
+				action(list.ElementAt(i), i);
+			}
+		}
+	}
+	}
